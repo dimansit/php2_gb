@@ -1,7 +1,7 @@
 <?php
 
 
-namespace php2;
+namespace php2\Class;
 
 class User
 {

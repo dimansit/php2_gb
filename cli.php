@@ -1,8 +1,8 @@
 <?php
 
-use php2\Article;
-use php2\Comment;
-use php2\User;
+use php2\Class\Article;
+use php2\Class\Comment;
+use php2\Class\User;
 
 require_once 'vendor/autoload.php';
 
@@ -30,5 +30,5 @@ switch ($argv[1]):
         echo $comment;
         break;
     default:
-        echo 'Error type params';
+        echo 'Error input params';
 endswitch;
