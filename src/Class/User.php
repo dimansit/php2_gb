@@ -5,41 +5,18 @@ namespace php2\Class;
 
 class User
 {
-    private int $id;
+    private string $uuid;
+    private string $username;
 
     public function __construct(
-        private string $firstName,
-        private string $lastName
+        private string $first_name,
+        private string $last_name
     )
     {
     }
 
-    /**
-     * @return string
-     */
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
     public function __toString(): string
     {
-        return $this->firstName . ' ' . $this->lastName;
+        return $this->first_name . ' ' . $this->last_name;
     }
 }

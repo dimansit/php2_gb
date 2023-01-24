@@ -7,18 +7,18 @@ namespace php2\Class;
 class Comment
 {
 
-    private int $id;
-    private int $userId;
-    private int $articleId;
+    private string $uuid;
+    private string $author_uuid;
+    private string $post_uuid;
 
     public function __construct(
-        private string $comment
+        private string $text
     )
     {
     }
 
     public function __toString(): string
     {
-        return $this->comment;
+        return $this->text;
     }
 }

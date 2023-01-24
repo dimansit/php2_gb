@@ -4,8 +4,8 @@ namespace php2\Class;
 
 class Article
 {
-    private int $id;
-    private int $idUser;
+    private string $uuid;
+    private string $author_uuid;
 
     public function __construct(
         private string $title,
