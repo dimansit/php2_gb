@@ -1,0 +1,17 @@
+{
+    "name": "gb/php2",
+    "autoload": {
+        "psr-4": {
+            "php2\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "dimansit",
+            "email": "dimansit@mail.ru"
+        }
+    ],
+    "require": {
+        "fakerphp/faker": "^1.21"
+    }
+}
