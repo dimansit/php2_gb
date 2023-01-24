@@ -8,6 +8,10 @@ require_once 'vendor/autoload.php';
 
 $faker = Faker\Factory::create('ru_RU');
 
+/**
+ * пока реалиция через свитч...
+ */
+
 switch ($argv[1]):
     case 'user':
         $user = new User(
