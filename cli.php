@@ -1,9 +1,11 @@
 <?php
 
+use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\Article;
 use GeekBrains\LevelTwo\Blog\Comment;
 use GeekBrains\LevelTwo\Blog\UUID;
+use GeekBrains\LevelTwo\Person\Name;
 
 $connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
 
@@ -17,13 +19,21 @@ $faker = Faker\Factory::create('ru_RU');
 
 switch ($argv[1]):
     case 'user':
+        $sql = new SqliteUsersRepository($connection);
+
         $user = new User(
             UUID::random(),
             $faker->name(),
-            $faker->firstName(),
-            $faker->lastName()
+            new Name(
+                $faker->firstName(),
+                $faker->lastName()
+            )
+
         );
-        echo $user;
+        echo $user.PHP_EOL;
+        $sql->save($user);
+
+
         break;
     case 'post':
         $article = new Article(

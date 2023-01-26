@@ -4,6 +4,7 @@
 namespace GeekBrains\LevelTwo\Blog;
 
 use GeekBrains\LevelTwo\Blog\UUID;
+use GeekBrains\LevelTwo\Person\Name;
 
 class User
 {
@@ -11,8 +12,7 @@ class User
     public function __construct(
         private UUID $uuid,
         private string $username,
-        private string $first_name,
-        private string $last_name
+        private Name $name
     )
     {
     }
@@ -38,7 +38,7 @@ class User
      */
     public function getFirstName(): string
     {
-        return $this->first_name;
+        return $this->name->first();
     }
 
     /**
@@ -46,12 +46,19 @@ class User
      */
     public function getLastName(): string
     {
-        return $this->last_name;
+        return $this->name->last();
     }
 
+    /**
+     * @return Name
+     */
+    public function getName(): Name
+    {
+        return $this->name;
+    }
 
     public function __toString(): string
     {
-        return $this->uuid.' '.$this->first_name . ' ' . $this->last_name;
+        return $this->uuid.' '.$this->name->last() . ' ' . $this->name->first();
     }
 }
