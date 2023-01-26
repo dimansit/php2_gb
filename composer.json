@@ -2,7 +2,7 @@
     "name": "gb/php2",
     "autoload": {
         "psr-4": {
-            "php2\\": "src/"
+            "GeekBrains\\LevelTwo\\": "src/"
         }
     },
     "authors": [
@@ -12,6 +12,7 @@
         }
     ],
     "require": {
-        "fakerphp/faker": "^1.21"
+        "fakerphp/faker": "^1.21",
+        "symfony/polyfill-uuid": "^1.27"
     }
 }

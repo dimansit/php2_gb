@@ -1,7 +1,7 @@
 <?php
 
 
-namespace php2\Class;
+namespace Geek\Class;
 
 
 class Comment

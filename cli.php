@@ -1,8 +1,11 @@
 <?php
 
-use php2\Class\Article;
-use php2\Class\Comment;
-use php2\Class\User;
+use GeekBrains\LevelTwo\Blog\User;
+use GeekBrains\LevelTwo\Blog\Article;
+use GeekBrains\LevelTwo\Blog\Comment;
+use GeekBrains\LevelTwo\Blog\UUID;
+
+$connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
 
 require_once 'vendor/autoload.php';
 
@@ -15,6 +18,8 @@ $faker = Faker\Factory::create('ru_RU');
 switch ($argv[1]):
     case 'user':
         $user = new User(
+            UUID::random(),
+            $faker->name(),
             $faker->firstName(),
             $faker->lastName()
         );
