@@ -1,19 +1,15 @@
 <?php
 
-
 namespace GeekBrains\LevelTwo\Blog;
 
-use GeekBrains\LevelTwo\Blog\Post;
-use GeekBrains\LevelTwo\Blog\User;
-use GeekBrains\LevelTwo\Blog\UUID;
 
-class Comment
+class Post
 {
 
     public function __construct(
         private UUID $uuid,
         private User $user,
-        private Post $post,
+        private string $title,
         private string $text
     )
     {
@@ -36,11 +32,11 @@ class Comment
     }
 
     /**
-     * @return Post
+     * @return string
      */
-    public function getPost(): Post
+    public function getTitle(): string
     {
-        return $this->post;
+        return $this->title;
     }
 
     /**
@@ -52,13 +48,9 @@ class Comment
     }
 
 
-
-
     public function __toString(): string
     {
-        return "Пользователь: $this->user".PHP_EOL.PHP_EOL
-            ."написал комментарий: $this->text.".PHP_EOL.PHP_EOL
-            ."к посту $this->post".PHP_EOL.PHP_EOL
-            ."пост ользователя: {$this->post->getUser()}";
+        return "ПОлзователь: $this->user" . PHP_EOL
+            . "Написал статью: $this->title  текст статьи: $this->text";
     }
 }

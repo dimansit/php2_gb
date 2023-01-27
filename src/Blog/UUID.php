@@ -6,7 +6,7 @@ use GeekBrains\Blog\Exceptions\InvalidArgumentException;
 
 class UUID
 {
-// Внутри объекта мы храним UUID как строку
+
     public function __construct(
         private string $uuidString
     )

@@ -18,9 +18,9 @@ class User
     }
 
     /**
-     * @return \GeekBrains\LevelTwo\Blog\UUID
+     * @return UUID
      */
-    public function getUuid(): \GeekBrains\LevelTwo\Blog\UUID
+    public function getUuid(): UUID
     {
         return $this->uuid;
     }
@@ -57,8 +57,11 @@ class User
         return $this->name;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
-        return $this->uuid.' '.$this->name->last() . ' ' . $this->name->first();
+        return "{$this->username}, имя {$this->name->last()} {$this->name->first()}";
     }
 }
