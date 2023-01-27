@@ -40,11 +40,11 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
     public function get(UUID $uuid): Comment
     {
         foreach ($this->comment as $comment) {
-        if ((string)$comment->uuid() === (string)$uuid) {
-            return $comment;
+            if ((string)$comment->uuid() === (string)$uuid) {
+                return $comment;
+            }
         }
-    }
-        throw new UserNotFoundException("User not found: $uuid");
+        throw new CommentNotFoundException("User not found: $uuid");
 
     }
 
