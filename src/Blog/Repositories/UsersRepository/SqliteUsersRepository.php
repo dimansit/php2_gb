@@ -2,11 +2,13 @@
 
 namespace GeekBrains\LevelTwo\Blog\Repositories\UsersRepository;
 
+use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Person\Name;
 
 use PDO;
+
 
 class SqliteUsersRepository implements UsersRepositoryInterface
 {
@@ -36,16 +38,24 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         ]);
     }
 
+    /**
+     * @throws UserNotFoundException
+     */
     public function get(UUID $uuid): User
     {
-        foreach ($this->users as $user) {
-            if ((string)$user->uuid() === (string)$uuid) {
-                return $user;
-            }
-        }
-        throw new UserNotFoundException("User not found: $uuid");
+        $statement = $this->connection->prepare(
+            'SELECT * FROM users WHERE uuid = :uuid'
+        );
+        $statement->execute([
+            ':uuid' => $uuid,
+        ]);
+        return $this->getUser($statement, $uuid);
     }
 
+
+    /**
+     * @throws UserNotFoundException
+     */
     public function getByUsername(string $username): User
     {
         $statement = $this->connection->prepare(
@@ -58,6 +68,9 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     }
 
 
+    /**
+     * @throws UserNotFoundException
+     */
     public function getRandomUser(): User
     {
         $statement = $this->connection->prepare(
@@ -69,9 +82,15 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
     //PDOStateme $statement - убрал потому как не смог разобраться почему в ошибку уходил
 
+    /**
+     * @throws UserNotFoundException
+     */
     private function getUser($statement, string $username): User
     {
+
         $result = $statement->fetch(PDO::FETCH_ASSOC);
+        print_r($result);
+        echo '----------------------------------';
         if (false === $result) {
             throw new UserNotFoundException(
                 "Cannot find user: $username"

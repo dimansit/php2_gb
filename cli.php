@@ -18,6 +18,15 @@ $faker = Faker\Factory::create('ru_RU');
 $argvArr = Arguments::fromArgv($argv);
 $type = $argvArr->get('type');
 
+
+
+$sqlPost = new SqlitePostsRepository($connection);
+$post = $sqlPost->get(new UUID('2b1974fc-1fcc-43e1-8230-5166f27787d8'));
+
+
+print_r($post);
+echo '---';
+die;
 $sqlComment = new SqliteCommentsRepository($connection);
 $sqlUser = new SqliteUsersRepository($connection);
 $userComment = $sqlUser->getRandomUser(); //выбираем рандомного пользователя от которого будет комменатрий

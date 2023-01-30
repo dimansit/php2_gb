@@ -2,7 +2,8 @@
 
 
 namespace GeekBrains\LevelTwo\Blog\Commands;
-use GeekBrains\LevelTwo\Blog\Exceptions;
+
+use GeekBrains\LevelTwo\Blog\Exceptions\ArgumentsException;
 
 final class Arguments
 {
