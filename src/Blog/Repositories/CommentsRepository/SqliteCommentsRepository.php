@@ -5,6 +5,7 @@ namespace GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository;
 
 
 use GeekBrains\LevelTwo\Blog\Comment;
+use GeekBrains\LevelTwo\Blog\Exceptions\CommentNotFoundException;
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PDO;
@@ -39,13 +40,15 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
     public function get(UUID $uuid): Comment
     {
-        foreach ($this->comment as $comment) {
-            if ((string)$comment->uuid() === (string)$uuid) {
-                return $comment;
-            }
-        }
-        throw new CommentNotFoundException("User not found: $uuid");
+        $statement = $this->connection->prepare(
+            'SELECT * FROM comments WHERE uuid = :uuid'
+        );
 
+        $statement->execute([
+            ':uuid' => $uuid,
+        ]);
+
+        return $this->getComment($statement, "Comments");
     }
 
 
@@ -64,12 +67,12 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
     {
         $result = $statement->fetchAll(PDO::FETCH_CLASS);
         if (false === $result) {
-            throw new UserNotFoundException(
+            throw new CommentNotFoundException(
                 "Cannot find: $text"
             );
         }
         var_dump($result);
-        return '';
+        return new Comment();
 
     }
 }

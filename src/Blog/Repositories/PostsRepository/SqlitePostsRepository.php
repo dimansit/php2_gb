@@ -63,9 +63,9 @@ class SqlitePostsRepository implements PostsRepositoryInterface
      * @throws \GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException
      */
     public function getPost(\PDOStatement $statement, string $postUuId): Post
-    {   
+    {
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
-        if (false === $result) {
+        if (!$result) {
             throw new PostNotFoundException(
                 "Cannot find: $postUuId"
             );
