@@ -37,12 +37,43 @@ class SqliteUsersRepositoryTest extends TestCase
         $repository->getByUsername('larionova.donat1');
     }
 
+    public function testItGetInDatabase(){
+
+        $statementStub = $this->createStub(PDOStatement::class);
+        $statementMock = $this->createMock(PDOStatement::class);
+        $connectionStub = $this->createStub(PDO::class);
+        $repository = new SqliteUsersRepository($connectionStub);
+        $statementStub->method('fetch')->willReturn(false);
+        $connectionStub->method('prepare')->willReturn($statementMock);
+
+        $this->expectException(UserNotFoundException::class);
+        $this->expectExceptionMessage('Cannot find user: 123e4567-e89b-12d3-a456-426614174000');
+        $repository->get(new UUID('123e4567-e89b-12d3-a456-426614174000'));
+    }
+
+    public function testItGetByUserNameInDatabase(){
+
+        $statementStub = $this->createStub(PDOStatement::class);
+        $statementMock = $this->createMock(PDOStatement::class);
+        $connectionStub = $this->createStub(PDO::class);
+        $repository = new SqliteUsersRepository($connectionStub);
+        $statementStub->method('fetch')->willReturn(false);
+        $connectionStub->method('prepare')->willReturn($statementMock);
+
+        $this->expectException(UserNotFoundException::class);
+        $this->expectExceptionMessage('Cannot find user: Ivan');
+
+        $repository->getByUsername('Ivan');
+    }
+
+    /**
+     * Поверка метода getRandomUser
+     * @throws UserNotFoundException
+     */
     public function testItGetRandomUserInDatabase(){
 
         $statementStub = $this->createStub(PDOStatement::class);
-
         $statementMock = $this->createMock(PDOStatement::class);
-
         $connectionStub = $this->createStub(PDO::class);
 
         $repository = new SqliteUsersRepository($connectionStub);

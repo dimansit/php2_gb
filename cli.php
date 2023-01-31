@@ -15,8 +15,11 @@ require_once 'vendor/autoload.php';
 
 $faker = Faker\Factory::create('ru_RU');
 
+//Сделал пока на Faker генерацию пользвателей, комментариев и постов
 $argvArr = Arguments::fromArgv($argv);
-$type = $argvArr->get('type');
+print_r($argv);
+die;
+//$type = $argvArr->get('type');
 
 
 

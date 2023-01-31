@@ -33,13 +33,6 @@ class User
         return $this->username;
     }
 
-    /**
-     * @return string
-     */
-    public function getFirstName(): string
-    {
-        return $this->name->first();
-    }
 
     /**
      * @return string

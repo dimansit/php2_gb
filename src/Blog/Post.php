@@ -50,7 +50,7 @@ class Post
 
     public function __toString(): string
     {
-        return "ПОлзователь: $this->user" . PHP_EOL
+        return "Ползователь: $this->user" . PHP_EOL
             . "Написал статью: $this->title  текст статьи: $this->text";
     }
 }

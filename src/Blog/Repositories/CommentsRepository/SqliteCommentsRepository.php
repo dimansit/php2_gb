@@ -6,6 +6,8 @@ namespace GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository;
 
 use GeekBrains\LevelTwo\Blog\Comment;
 use GeekBrains\LevelTwo\Blog\Exceptions\CommentNotFoundException;
+use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PDO;
@@ -38,6 +40,10 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         ]);
     }
 
+    /**
+     * @throws \GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException
+     * @throws CommentNotFoundException
+     */
     public function get(UUID $uuid): Comment
     {
         $statement = $this->connection->prepare(
@@ -48,31 +54,30 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             ':uuid' => $uuid,
         ]);
 
-        return $this->getComment($statement, "Comments");
+        return $this->getComment($statement, $uuid);
     }
 
 
-    public function getUserComments(User $user)
+    /**
+     * @throws \GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException
+     * @throws CommentNotFoundException
+     */
+    private function getComment(\PDOStatement $statement, $text): Comment
     {
-        $statement = $this->connection->prepare(
-            'SELECT * FROM comments WHERE username_uuid = :username_uuid'
-        );
-        $statement->execute([
-            ':username_uuid' => $user->getUuid(),
-        ]);
-        return $this->getComment($statement, "Comments user $user");
-    }
-
-    private function getComment($statement, $text)
-    {
-        $result = $statement->fetchAll(PDO::FETCH_CLASS);
-        if (false === $result) {
+        $result = $statement->fetch(PDO::FETCH_CLASS);
+        if (!$result) {
             throw new CommentNotFoundException(
                 "Cannot find: $text"
             );
         }
-        var_dump($result);
-        return new Comment();
+        $user = new SqliteUsersRepository($this->connection);
+        $post = new SqlitePostsRepository($this->connection);
+        return new Comment(
+            new UUID($result['uuid']),
+            $user->get(new UUID($result['username_uuid'])),
+            $post->get(new UUID($result['post_uuid'])),
+            $result['text']
+        );
 
     }
 }

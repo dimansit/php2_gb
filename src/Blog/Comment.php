@@ -59,6 +59,6 @@ class Comment
         return "Пользователь: $this->user".PHP_EOL.PHP_EOL
             ."написал комментарий: $this->text.".PHP_EOL.PHP_EOL
             ."к посту $this->post".PHP_EOL.PHP_EOL
-            ."пост ользователя: {$this->post->getUser()}";
+            ."пост пользователя: {$this->post->getUser()}";
     }
 }
