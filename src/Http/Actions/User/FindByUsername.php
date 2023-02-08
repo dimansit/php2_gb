@@ -10,6 +10,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterfa
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
+use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 
 class FindByUsername implements ActionInterface
@@ -20,11 +21,14 @@ class FindByUsername implements ActionInterface
     {
     }
 
-    public function handle(Request $request): SuccessfulResponse
+    /**
+     * @param Request $request
+     * @return SuccessfulResponse
+     */
+    public function handle(Request $request): Response
     {
         try {
             $username = $request->query('username');
-
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }

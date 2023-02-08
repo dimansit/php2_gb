@@ -1,22 +1,24 @@
 <?php
 
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
-use GeekBrains\LevelTwo\Blog\Exceptions\HttpException as HttpExceptionAlias;
-use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository as SqliteCommentsRepositoryAlias;
-use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
-use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
 use GeekBrains\LevelTwo\Http\Actions\Comments\CreateComment;
+use GeekBrains\LevelTwo\Http\Actions\Likes\AddLike;
+use GeekBrains\LevelTwo\Http\Actions\Likes\FindLikesByPost;
 use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePost;
 use GeekBrains\LevelTwo\Http\Actions\Posts\DeletePost;
 use GeekBrains\LevelTwo\Http\Actions\User\CreateUser;
 use GeekBrains\LevelTwo\Http\Actions\User\FindByUsername;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
-use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 
-require_once __DIR__ . '/vendor/autoload.php';
+$container = require __DIR__ . '/bootstrap.php';
 
-$request = new Request($_GET, $_SERVER, file_get_contents('php://input'),);
+$request = new Request(
+    $_GET,
+    $_SERVER,
+    file_get_contents('php://input')
+);
 
 try {
     $path = $request->path();
@@ -24,7 +26,6 @@ try {
     (new ErrorResponse)->send();
     return;
 }
-
 
 try {
     $method = $request->method();
@@ -34,49 +35,17 @@ try {
 }
 $routes = [
     'GET' => [
-        '/users/show' => new FindByUsername(
-            new SqliteUsersRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
-//        '/posts/show' => new FindByUuid(
-//            new SqlitePostsRepository(
-//                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-//            )
-//        ),
+        '/users/show' => FindByUsername::class,
+        '/postlikes/show' => FindLikesByPost::class
     ],
     'DELETE' => [
-        '/post' => new DeletePost(
-            new SqlitePostsRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
+        '/post' => DeletePost::class
     ],
     'POST' => [
-        '/user/create' => new CreateUser(
-            new SqliteUsersRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
-        '/posts/create' => new CreatePost(
-            new SqlitePostsRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            ),
-            new SqliteUsersRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
-        '/posts/comment' => new CreateComment(
-            new SqliteCommentsRepositoryAlias(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            ),
-            new SqlitePostsRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            ),
-            new SqliteUsersRepository(
-                new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
-            )
-        ),
+        '/user/create' => CreateUser::class,
+        '/posts/create' => CreatePost::class,
+        '/posts/comment' => CreateComment::class,
+        '/posts/like' => AddLike::class
     ],
 ];
 
@@ -90,7 +59,11 @@ if (!array_key_exists($path, $routes[$method])) {
     return;
 }
 
-$action = $routes[$method][$path];
+$actionClassName = $routes[$method][$path];
+
+echo '==='.$actionClassName;
+
+$action = $container->get($actionClassName);
 
 try {
     $response = $action->handle($request);
