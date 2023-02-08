@@ -81,7 +81,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
      */
     public function getLikes(\PDOStatement $statement, $likeInfo)
     {
-        $result = $statement->fetchAll();
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         if (!$result) {
             throw new LikeNotFoundException(
                 "Cannot find: $likeInfo"
