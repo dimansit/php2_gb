@@ -61,8 +61,6 @@ if (!array_key_exists($path, $routes[$method])) {
 
 $actionClassName = $routes[$method][$path];
 
-echo '==='.$actionClassName;
-
 $action = $container->get($actionClassName);
 
 try {
