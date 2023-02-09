@@ -65,8 +65,9 @@ $action = $container->get($actionClassName);
 
 try {
     $response = $action->handle($request);
+    $response->send();
 } catch (AppException $e) {
     (new ErrorResponse($e->getMessage()))->send();
 }
-$response->send();
+
 

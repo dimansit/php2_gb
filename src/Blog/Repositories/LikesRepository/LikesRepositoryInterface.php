@@ -10,5 +10,5 @@ interface LikesRepositoryInterface
 {
     public function save(Like $like): void;
 
-    public function getByLikesUuid(UUID $uuid): Like;
+    public function getByLikesUuid(UUID $uuid);
 }

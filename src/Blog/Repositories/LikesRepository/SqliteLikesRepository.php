@@ -6,8 +6,7 @@ namespace GeekBrains\LevelTwo\Blog\Repositories\LikesRepository;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeNotFoundException;
 use GeekBrains\LevelTwo\Blog\Like;
 use GeekBrains\LevelTwo\Blog\Post;
-use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
-use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
+use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PDO;
 
@@ -20,22 +19,22 @@ class SqliteLikesRepository implements LikesRepositoryInterface
     {
     }
 
-//    private function likeExistByUser(Like $like)
-//    {
-//        $statement = $this->connection->prepare(
-//            'SELECT * FROM like
-//                   WHERE
-//                         user_uuid = :user_uuid and
-//                         post_uuid = :post_uuid'
-//        );
-//
-//        $statement->execute([
-//            ':user_uuid' => $like->getPostUuid(),
-//            ':user_uuid' => $like->getUserUuid(),
-//        ]);
-//
-//        return $this->getLike($statement, 'UserLike');
-//    }
+    public function findLikePostByUser(User $user, Post $post)
+    {
+        $statement = $this->connection->prepare(
+            'SELECT * FROM likes
+                   WHERE
+                         user_uuid = :user_uuid and
+                         post_uuid = :post_uuid'
+        );
+
+        $statement->execute([
+            ':user_uuid' => $user->getUuid(),
+            ':post_uuid' => $post->getUuid(),
+        ]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function save(Like $like): void
     {
@@ -61,7 +60,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
     }
 
 
-    public function getByPostUuid(UUID $uuid)
+    public function getByLikesUuid(UUID $uuid)
     {
         $statement = $this->connection->prepare(
             'SELECT * FROM likes WHERE post_uuid = :post_uuid'
@@ -79,7 +78,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
      * @throws \GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException
      * @throws LikeNotFoundException
      */
-    public function getLikes(\PDOStatement $statement, $likeInfo)
+    public function getLikes(\PDOStatement $statement, $likeInfo):array
     {
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         if (!$result) {
@@ -87,17 +86,8 @@ class SqliteLikesRepository implements LikesRepositoryInterface
                 "Cannot find: $likeInfo"
             );
         }
-
-//        $user = new SqliteUsersRepository($this->connection);
-//        $post = new SqlitePostsRepository($this->connection);
-//
-//        $likes = [];
-
         return $result;
     }
 
-    public function getByLikesUuid(UUID $uuid): Like
-    {
-        // TODO: Implement getByLikesUuid() method.
-    }
+
 }

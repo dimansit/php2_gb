@@ -19,7 +19,7 @@ class DIContainer implements ContainerInterface
     }
 
 
-    public function get($type): object
+    public function get($type): mixed
     {
         if (array_key_exists($type, $this->resolvers)) {
             $typeToCreate = $this->resolvers[$type];

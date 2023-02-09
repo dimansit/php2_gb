@@ -38,8 +38,14 @@ class AddLike implements ActionInterface
 
     public function handle(Request $request): Response
     {
+
         $author = $this->getAuthor($request);
         $post = $this->getPost($request);
+        $existLike = $this->getLikePostByUser($author, $post);
+
+        if ($existLike)
+            return new ErrorResponse('Error: you have already put a bark on this post');
+
         $newLikeUuid = UUID::random();
         try {
             $like = new Like(
@@ -55,6 +61,11 @@ class AddLike implements ActionInterface
         return new SuccessfulResponse([
             'uuid' => (string)$newLikeUuid,
         ]);
+    }
+
+    private function getLikePostByUser($user, $post)
+    {
+        return $this->likesRepository->findLikePostByUser($user, $post);
     }
 
     private function getAuthor(Request $request)
