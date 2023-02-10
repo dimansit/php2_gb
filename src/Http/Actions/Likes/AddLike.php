@@ -63,12 +63,21 @@ class AddLike implements ActionInterface
         ]);
     }
 
-    private function getLikePostByUser($user, $post)
+    /**
+     * @param $user
+     * @param $post
+     * @return array
+     */
+    private function getLikePostByUser($user, $post): array
     {
         return $this->likesRepository->findLikePostByUser($user, $post);
     }
 
-    private function getAuthor(Request $request)
+    /**
+     * @param Request $request
+     * @return \GeekBrains\LevelTwo\Blog\User|ErrorResponse
+     */
+    private function getAuthor(Request $request): Request
     {
         try {
             $authorUuid = new UUID($request->jsonBodyField('user_uuid'));
@@ -84,7 +93,11 @@ class AddLike implements ActionInterface
         return $author;
     }
 
-    private function getPost(Request $request)
+    /**
+     * @param Request $request
+     * @return \GeekBrains\LevelTwo\Blog\Post|ErrorResponse
+     */
+    private function getPost(Request $request): Request
     {
         try {
             $postUuid = new UUID($request->jsonBodyField('post_uuid'));

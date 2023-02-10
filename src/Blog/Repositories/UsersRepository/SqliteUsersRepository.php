@@ -18,6 +18,9 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     {
     }
 
+    /**
+     * @param User $user
+     */
     public function save(User $user): void
     {
         $statement = $this->connection->prepare(
@@ -39,6 +42,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     }
 
     /**
+     * @param UUID $uuid
+     * @return User
      * @throws UserNotFoundException
      */
     public function get(UUID $uuid): User
@@ -55,6 +60,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
 
     /**
+     * @param string $username
+     * @return User
      * @throws UserNotFoundException
      */
     public function getByUsername(string $username): User
@@ -70,6 +77,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
 
     /**
+     * @return User
      * @throws UserNotFoundException
      */
     public function getRandomUser(): User
@@ -81,9 +89,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         return $this->getUser($statement, 'Random User');
     }
 
-    //PDOStateme $statement - убрал потому как не смог разобраться почему в ошибку уходил
-
     /**
+     * @param \PDOStatement $statement
+     * @param string $username
+     * @return User
      * @throws UserNotFoundException
      */
     private function getUser(\PDOStatement $statement, string $username): User
