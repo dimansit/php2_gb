@@ -19,7 +19,12 @@ class SqliteLikesRepository implements LikesRepositoryInterface
     {
     }
 
-    public function findLikePostByUser(User $user, Post $post)
+    /**
+     * @param User $user
+     * @param Post $post
+     * @return array
+     */
+    public function findLikePostByUser(User $user, Post $post): array
     {
         $statement = $this->connection->prepare(
             'SELECT * FROM likes
@@ -59,8 +64,13 @@ class SqliteLikesRepository implements LikesRepositoryInterface
 
     }
 
-
-    public function getByLikesUuid(UUID $uuid)
+    /**
+     * @param UUID $uuid
+     * @return array
+     * @throws LikeNotFoundException
+     * @throws \GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException
+     */
+    public function getByLikesUuid(UUID $uuid): array
     {
         $statement = $this->connection->prepare(
             'SELECT * FROM likes WHERE post_uuid = :post_uuid'
@@ -78,7 +88,7 @@ class SqliteLikesRepository implements LikesRepositoryInterface
      * @throws \GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException
      * @throws LikeNotFoundException
      */
-    public function getLikes(\PDOStatement $statement, $likeInfo):array
+    public function getLikes(\PDOStatement $statement, $likeInfo): array
     {
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         if (!$result) {

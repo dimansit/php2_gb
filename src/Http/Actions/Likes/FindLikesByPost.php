@@ -34,7 +34,6 @@ class FindLikesByPost implements ActionInterface
      */
     public function handle(Request $request): Response
     {
-
         try {
             $postUuid = new UUID($request->query('post_uuid'));
         } catch (HttpException $e) {
