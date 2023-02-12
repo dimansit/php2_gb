@@ -19,6 +19,7 @@ use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use PHPUnit\Framework\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
@@ -27,6 +28,7 @@ class CreateComment implements ActionInterface
         private CommentsRepositoryInterface $commentsRepository,
         private PostsRepositoryInterface $postsRepository,
         private UsersRepositoryInterface $usersRepository,
+        private LoggerInterface $logger,
     )
     {
     }
@@ -74,10 +76,10 @@ class CreateComment implements ActionInterface
     }
 
     /**
-     * @param $request
+     * @param Request $request
      * @return User|ErrorResponse
      */
-    private function getUser($request)
+    private function getUser(Request $request): User|ErrorResponse
     {
         try {
             $userUuid = new UUID($request->jsonBodyField('author_uuid'));

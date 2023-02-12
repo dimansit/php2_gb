@@ -15,6 +15,7 @@ use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 
 class FindLikesByPost implements ActionInterface
@@ -22,7 +23,8 @@ class FindLikesByPost implements ActionInterface
 
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
-        private LikesRepositoryInterface $likesRepository
+        private LikesRepositoryInterface $likesRepository,
+        private LoggerInterface $logger,
     )
     {
 

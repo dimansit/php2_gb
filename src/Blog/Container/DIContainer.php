@@ -19,6 +19,9 @@ class DIContainer implements ContainerInterface
     }
 
 
+    /**
+     * @throws NotFoundException
+     */
     public function get($type): mixed
     {
         if (array_key_exists($type, $this->resolvers)) {

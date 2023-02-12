@@ -15,11 +15,13 @@ use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
 use GeekBrains\LevelTwo\Http\SuccessfulResponse;
 use PHPUnit\Framework\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 
 class DeletePost implements ActionInterface
 {
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
+        private LoggerInterface $logger,
     )
     {
     }

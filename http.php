@@ -11,6 +11,7 @@ use GeekBrains\LevelTwo\Http\Actions\User\CreateUser;
 use GeekBrains\LevelTwo\Http\Actions\User\FindByUsername;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
+use Psr\Log\LoggerInterface;
 
 $container = require __DIR__ . '/bootstrap.php';
 
@@ -20,9 +21,12 @@ $request = new Request(
     file_get_contents('php://input')
 );
 
+$logger = $container->get(LoggerInterface::class);
+
 try {
     $path = $request->path();
-} catch (HttpException) {
+} catch (HttpException $e) {
+    $logger->warning($e->getMessage());
     (new ErrorResponse)->send();
     return;
 }
@@ -30,6 +34,8 @@ try {
 try {
     $method = $request->method();
 } catch (HttpExceptionAlias $e) {
+    $logger->warning($e->getMessage());
+
     (new ErrorResponse)->send();
     return;
 }
@@ -49,15 +55,14 @@ $routes = [
     ],
 ];
 
-if (!array_key_exists($method, $routes)) {
-    (new ErrorResponse('Not found'))->send();
+if (!array_key_exists($method, $routes)
+    || !array_key_exists($path, $routes[$method])) {
+    $message = "Route not found: $method $path";
+    $logger->notice($message);
+    (new ErrorResponse($message))->send();
     return;
 }
 
-if (!array_key_exists($path, $routes[$method])) {
-    (new ErrorResponse('Not found'))->send();
-    return;
-}
 
 $actionClassName = $routes[$method][$path];
 
@@ -67,6 +72,7 @@ try {
     $response = $action->handle($request);
     $response->send();
 } catch (AppException $e) {
+    $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse($e->getMessage()))->send();
 }
 
