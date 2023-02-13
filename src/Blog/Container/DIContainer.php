@@ -3,6 +3,8 @@
 
 namespace GeekBrains\LevelTwo\Blog\Container;
 
+use GeekBrains\LevelTwo\Blog\Exceptions\NotFoundException;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
 class DIContainer implements ContainerInterface
@@ -22,36 +24,38 @@ class DIContainer implements ContainerInterface
     /**
      * @throws NotFoundException
      */
-    public function get($type): mixed
+    public function get($id): mixed
     {
-        if (array_key_exists($type, $this->resolvers)) {
-            $typeToCreate = $this->resolvers[$type];
+        if (array_key_exists($id, $this->resolvers)) {
+            $typeToCreate = $this->resolvers[$id];
             if (is_object($typeToCreate)) {
                 return $typeToCreate;
             }
             return $this->get($typeToCreate);
         }
-        if (!class_exists($type)) {
-            throw new NotFoundException("Cannot resolve type: $type");
+
+        if (!class_exists($id)) {
+            throw new NotFoundException("Cannot resolve type: $id");
         }
-        $reflectionClass = new ReflectionClass($type);
+        $reflectionClass = new ReflectionClass($id);
         $constructor = $reflectionClass->getConstructor();
         if (null === $constructor) {
-            return new $type();
+            return new $id();
         }
         $parameters = [];
         foreach ($constructor->getParameters() as $parameter) {
             $parameterType = $parameter->getType()->getName();
             $parameters[] = $this->get($parameterType);
         }
-        return new $type(...$parameters);
+
+        return new $id(...$parameters);
     }
 
 
-    public function has($type)
+    public function has(string $id): bool
     {
         try {
-            $this->get($type);
+            $this->get($id);
         } catch (NotFoundException $e) {
             return false;
         }

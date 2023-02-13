@@ -14,6 +14,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
@@ -27,7 +28,7 @@ class CreateComment implements ActionInterface
     public function __construct(
         private CommentsRepositoryInterface $commentsRepository,
         private PostsRepositoryInterface $postsRepository,
-        private UsersRepositoryInterface $usersRepository,
+        private IdentificationInterface $identification,
         private LoggerInterface $logger,
     )
     {
@@ -35,7 +36,8 @@ class CreateComment implements ActionInterface
 
     public function handle(Request $request): Response
     {
-        $user = $this->getUser($request);
+        $this->logger->info('Start create comment');
+        $user = $this->identification->user($request);
         $post = $this->getPost($request);
         $newCommentUuid = UUID::random();
         try {
@@ -46,10 +48,12 @@ class CreateComment implements ActionInterface
                 $request->jsonBodyField('text'),
             );
         } catch (HttpException $e) {
+            $this->logger->error('Error create comment' . $e->getMessage());
             return new ErrorResponse($e->getMessage());
         }
 
         $this->commentsRepository->save($comment);
+        $this->logger->info('Create comment' . $newCommentUuid);
         return new SuccessfulResponse([
             'uuid' => (string)$newCommentUuid,
         ]);
@@ -75,23 +79,4 @@ class CreateComment implements ActionInterface
         return $post;
     }
 
-    /**
-     * @param Request $request
-     * @return User|ErrorResponse
-     */
-    private function getUser(Request $request): User|ErrorResponse
-    {
-        try {
-            $userUuid = new UUID($request->jsonBodyField('author_uuid'));
-        } catch (HttpException | InvalidArgumentException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-
-        try {
-            $user = $this->usersRepository->get($userUuid);
-        } catch (UserNotFoundException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-        return $user;
-    }
 }

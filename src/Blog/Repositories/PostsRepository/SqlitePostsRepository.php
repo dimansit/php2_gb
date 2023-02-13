@@ -9,12 +9,14 @@ use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInterface
 {
 
     public function __construct(
-        private PDO $connection
+        private PDO $connection,
+        private LoggerInterface $logger,
     )
     {
     }
@@ -42,6 +44,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             ':title' => $post->getTitle(),
             ':text' => $post->getText()
         ]);
+        $this->logger->info('Post creat: ' . $post->getUuid());
 
     }
 
@@ -56,6 +59,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         ]);
 
         if (!$result) {
+            $this->logger->warning("Cannot not delete, post not found: $postUuId");
             throw new PostNotFoundException(
                 "Cannot not delete: $postUuId"
             );
@@ -84,6 +88,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     {
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
         if (!$result) {
+            $this->logger->warning("Cannot find: $postUuId");
             throw new PostNotFoundException(
                 "Cannot find: $postUuId"
             );

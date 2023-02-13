@@ -13,6 +13,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
@@ -31,7 +32,7 @@ class AddLike implements ActionInterface
      */
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
-        private UsersRepositoryInterface $usersRepository,
+        private IdentificationInterface $identification,
         private LikesRepositoryInterface $likesRepository,
         private LoggerInterface $logger,
     )
@@ -40,13 +41,15 @@ class AddLike implements ActionInterface
 
     public function handle(Request $request): Response
     {
-
-        $author = $this->getAuthor($request);
+        $this->logger->info('Start add like');
+        $author =  $this->identification->user($request);
         $post = $this->getPost($request);
         $existLike = $this->getLikePostByUser($author, $post);
 
-        if ($existLike)
+        if ($existLike) {
+            $this->logger->error('you have already put a bark on this post');
             return new ErrorResponse('Error: you have already put a bark on this post');
+        }
 
         $newLikeUuid = UUID::random();
         try {
@@ -56,6 +59,7 @@ class AddLike implements ActionInterface
                 $author
             );
         } catch (HttpException $e) {
+            $this->logger->error("Error crete like " . $e->getMessage());
             return new ErrorResponse($e->getMessage());
         }
 
@@ -70,21 +74,6 @@ class AddLike implements ActionInterface
         return $this->likesRepository->findLikePostByUser($user, $post);
     }
 
-    private function getAuthor(Request $request)
-    {
-        try {
-            $authorUuid = new UUID($request->jsonBodyField('user_uuid'));
-        } catch (HttpException | InvalidArgumentException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-
-        try {
-            $author = $this->usersRepository->get($authorUuid);
-        } catch (UserNotFoundException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-        return $author;
-    }
 
     private function getPost(Request $request)
     {

@@ -3,6 +3,7 @@
 
 namespace GeekBrains\Blog\UnitTests\Repositories\UsersRepository;
 
+use GeekBrains\Blog\UnitTests\DummyLogger;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\User;
@@ -28,7 +29,7 @@ class SqliteUsersRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
 
         $this->expectException(UserNotFoundException::class);
 
@@ -42,7 +43,7 @@ class SqliteUsersRepositoryTest extends TestCase
         $statementStub = $this->createStub(PDOStatement::class);
         $statementMock = $this->createMock(PDOStatement::class);
         $connectionStub = $this->createStub(PDO::class);
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
         $statementStub->method('fetch')->willReturn(false);
         $connectionStub->method('prepare')->willReturn($statementMock);
 
@@ -56,7 +57,7 @@ class SqliteUsersRepositoryTest extends TestCase
         $statementStub = $this->createStub(PDOStatement::class);
         $statementMock = $this->createMock(PDOStatement::class);
         $connectionStub = $this->createStub(PDO::class);
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
         $statementStub->method('fetch')->willReturn(false);
         $connectionStub->method('prepare')->willReturn($statementMock);
 
@@ -76,7 +77,7 @@ class SqliteUsersRepositoryTest extends TestCase
         $statementMock = $this->createMock(PDOStatement::class);
         $connectionStub = $this->createStub(PDO::class);
 
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
 
         $statementStub->method('fetch')->willReturn(false);
 
@@ -107,7 +108,7 @@ class SqliteUsersRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repository = new SqliteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub, new DummyLogger());
 
         $repository->save(
             new User( // Свойства пользователя точно такие,

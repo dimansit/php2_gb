@@ -6,8 +6,11 @@ use GeekBrains\LevelTwo\Blog\Container\DIContainer;
 use GeekBrains\LevelTwo\Blog\Container\NotFoundException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
+use Monolog\Logger;
 use PDO;
+use GeekBrains\Blog\UnitTests\DummyLogger;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class DIContainerTest extends TestCase
 {
@@ -59,6 +62,10 @@ class DIContainerTest extends TestCase
             new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
         );
         $container->bind(
+            LoggerInterface::class,
+            new DummyLogger()
+        );
+        $container->bind(
             UsersRepositoryInterface::class,
             SqliteUsersRepository::class
         );
@@ -83,12 +90,15 @@ class DIContainerTest extends TestCase
 
     public function testItThrowsAnExceptionIfCannotResolveType(): void
     {
+
         $container = new DIContainer();
-        $this->expectException(NotFoundException::class);
+
+        $this->expectException(\GeekBrains\LevelTwo\Blog\Exceptions\NotFoundException::class);
         $this->expectExceptionMessage(
             'Cannot resolve type: GeekBrains\Blog\UnitTests\Container\SomeClass'
         );
         $container->get(SomeClass::class);
+
     }
 
 }

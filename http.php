@@ -58,7 +58,7 @@ $routes = [
 if (!array_key_exists($method, $routes)
     || !array_key_exists($path, $routes[$method])) {
     $message = "Route not found: $method $path";
-    $logger->notice($message);
+    $logger->error($message);
     (new ErrorResponse($message))->send();
     return;
 }
