@@ -16,6 +16,7 @@ use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
 use GeekBrains\LevelTwo\Http\Auth\AuthenticationInterface;
 use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\TokenAuthenticationInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
@@ -29,7 +30,7 @@ class CreateComment implements ActionInterface
     public function __construct(
         private CommentsRepositoryInterface $commentsRepository,
         private PostsRepositoryInterface $postsRepository,
-        private AuthenticationInterface $authentication,
+        private TokenAuthenticationInterface $authentication,
         private LoggerInterface $logger,
     )
     {
