@@ -14,7 +14,9 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Http\Auth\AuthenticationInterface;
 use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
+use GeekBrains\LevelTwo\Http\Auth\TokenAuthenticationInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use GeekBrains\LevelTwo\Http\Response;
@@ -28,7 +30,7 @@ class CreateComment implements ActionInterface
     public function __construct(
         private CommentsRepositoryInterface $commentsRepository,
         private PostsRepositoryInterface $postsRepository,
-        private IdentificationInterface $identification,
+        private TokenAuthenticationInterface $authentication,
         private LoggerInterface $logger,
     )
     {
@@ -37,7 +39,7 @@ class CreateComment implements ActionInterface
     public function handle(Request $request): Response
     {
         $this->logger->info('Start create comment');
-        $user = $this->identification->user($request);
+        $user = $this->authentication->user($request);
         $post = $this->getPost($request);
         $newCommentUuid = UUID::random();
         try {

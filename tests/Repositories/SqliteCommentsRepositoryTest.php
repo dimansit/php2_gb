@@ -65,6 +65,7 @@ class SqliteCommentsRepositoryTest extends TestCase
                 new User(
                     new UUID('e69b6468-2c88-40a0-a8ed-331fba8037e0'),
                     'useranme',
+                    'pass',
                     new Name('ivan', 'ivanov')
                 ),
                 new Post(
@@ -72,6 +73,7 @@ class SqliteCommentsRepositoryTest extends TestCase
                     new User(
                         new UUID('e44e3d3e-a65d-4d7c-aed7-aedb25764591'),
                         'useranme',
+                        'pass',
                         new Name('ivan', 'ivanov')
                     ),
                     'title',

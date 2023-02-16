@@ -20,16 +20,20 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     {
     }
 
+    /**
+     * @param User $user
+     */
     public function save(User $user): void
     {
 
         $statement = $this->connection->prepare(
-            'INSERT INTO users (uuid, first_name, last_name, username)
+            'INSERT INTO users (uuid, first_name, last_name, username,password)
                    VALUES (
                            :uuid, 
                            :first_name,
                            :last_name, 
-                           :username
+                           :username,
+                           :password
                            )'
         );
 
@@ -37,7 +41,8 @@ class SqliteUsersRepository implements UsersRepositoryInterface
             ':uuid' => $user->getUuid(),
             ':first_name' => $user->getName()->first(),
             ':last_name' => $user->getName()->last(),
-            ':username' => $user->getUsername()
+            ':username' => $user->getUsername(),
+            ':password' => $user->getPassword(),
         ]);
         $this->logger->info('User creat: ' . $user->getUuid());
     }
@@ -54,7 +59,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $statement->execute([
             ':uuid' => $uuid,
         ]);
-        return $this->getUser($statement, $uuid);
+        return $this->getUser(
+            $statement,
+            $uuid
+        );
     }
 
 
@@ -95,7 +103,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (null === $result) {
+        if (!$result) {
             $this->logger->warning('User no found: ' . $username);
             throw new UserNotFoundException(
                 "Cannot find user: $username"
@@ -105,6 +113,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         return new User(
             new UUID($result['uuid']),
             $result['username'],
+            $result['password']??'',
             new Name($result['first_name'], $result['last_name'])
         );
     }
