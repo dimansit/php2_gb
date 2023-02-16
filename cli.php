@@ -27,9 +27,6 @@ $sqlPost = new SqlitePostsRepository($connection);
 $post = $sqlPost->get(new UUID('2b1974fc-1fcc-43e1-8230-5166f27787d8'));
 
 
-print_r($post);
-echo '---';
-die;
 $sqlComment = new SqliteCommentsRepository($connection);
 $sqlUser = new SqliteUsersRepository($connection);
 $userComment = $sqlUser->getRandomUser(); //выбираем рандомного пользователя от которого будет комменатрий
@@ -47,9 +44,6 @@ $user = new User(  //создаем нового пользователя
 
 );
 $sqlUser->save($user); //записываем нового пользователя
-
-echo $user.PHP_EOL;
-echo ' --------------------------------------------------'.PHP_EOL;
 
 $sqlPost = new SqlitePostsRepository($connection);
 $post = new Post( //создаем статью от имени нового пользователя

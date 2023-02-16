@@ -9,6 +9,7 @@ use GeekBrains\LevelTwo\Http\Actions\Posts\CreatePost;
 use GeekBrains\LevelTwo\Http\Actions\Posts\DeletePost;
 use GeekBrains\LevelTwo\Http\Actions\User\CreateUser;
 use GeekBrains\LevelTwo\Http\Actions\User\FindByUsername;
+use GeekBrains\LevelTwo\Http\Auth\LogIn;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
 use Psr\Log\LoggerInterface;
@@ -48,6 +49,7 @@ $routes = [
         '/post' => DeletePost::class
     ],
     'POST' => [
+        '/login' => LogIn::class,
         '/user/create' => CreateUser::class,
         '/posts/create' => CreatePost::class,
         '/posts/comment' => CreateComment::class,

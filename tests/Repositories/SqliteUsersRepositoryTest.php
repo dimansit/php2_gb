@@ -38,7 +38,8 @@ class SqliteUsersRepositoryTest extends TestCase
         $repository->getByUsername('larionova.donat1');
     }
 
-    public function testItGetInDatabase(){
+    public function testItGetInDatabase()
+    {
 
         $statementStub = $this->createStub(PDOStatement::class);
         $statementMock = $this->createMock(PDOStatement::class);
@@ -52,7 +53,8 @@ class SqliteUsersRepositoryTest extends TestCase
         $repository->get(new UUID('123e4567-e89b-12d3-a456-426614174000'));
     }
 
-    public function testItGetByUserNameInDatabase(){
+    public function testItGetByUserNameInDatabase()
+    {
 
         $statementStub = $this->createStub(PDOStatement::class);
         $statementMock = $this->createMock(PDOStatement::class);
@@ -71,7 +73,8 @@ class SqliteUsersRepositoryTest extends TestCase
      * Поверка метода getRandomUser
      * @throws UserNotFoundException
      */
-    public function testItGetRandomUserInDatabase(){
+    public function testItGetRandomUserInDatabase()
+    {
 
         $statementStub = $this->createStub(PDOStatement::class);
         $statementMock = $this->createMock(PDOStatement::class);
@@ -100,10 +103,11 @@ class SqliteUsersRepositoryTest extends TestCase
             ->expects($this->once()) // Ожидаем, что будет вызван один раз
             ->method('execute') // метод execute
             ->with([ // с единственным аргументом - массивом
-                ':uuid' => '123e4567-e89b-12d3-a456-426614174000',
-                ':username' => 'ivan123',
-                ':first_name' => 'Ivan',
-                ':last_name' => 'Nikitin',
+                ':uuid' => 'b1f842f4-c8f3-40a0-8c5e-127661dddecc',
+                ':username' => 'user10021',
+                ':first_name' => 'test',
+                ':password' => '1458029e2a4e21c21ed1f51883627278151bf00d29c272430a9e3c6a3dc1cdf5',
+                ':last_name' => 'test2',
             ]);
 
         $connectionStub->method('prepare')->willReturn($statementMock);
@@ -112,9 +116,10 @@ class SqliteUsersRepositoryTest extends TestCase
 
         $repository->save(
             new User( // Свойства пользователя точно такие,
-                new UUID('123e4567-e89b-12d3-a456-426614174000'),
-                'ivan123',
-                new Name('Ivan', 'Nikitin')
+                new UUID('b1f842f4-c8f3-40a0-8c5e-127661dddecc'),
+                'user10021',
+                '1458029e2a4e21c21ed1f51883627278151bf00d29c272430a9e3c6a3dc1cdf5',
+                new Name('test', 'test2')
             )
         );
 

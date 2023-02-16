@@ -13,6 +13,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Http\Auth\AuthenticationInterface;
 use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
 use GeekBrains\LevelTwo\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Http\Request;
@@ -32,7 +33,7 @@ class AddLike implements ActionInterface
      */
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
-        private IdentificationInterface $identification,
+        private AuthenticationInterface $authentication,
         private LikesRepositoryInterface $likesRepository,
         private LoggerInterface $logger,
     )
@@ -42,7 +43,7 @@ class AddLike implements ActionInterface
     public function handle(Request $request): Response
     {
         $this->logger->info('Start add like');
-        $author =  $this->identification->user($request);
+        $author =  $this->authentication->user($request);
         $post = $this->getPost($request);
         $existLike = $this->getLikePostByUser($author, $post);
 
