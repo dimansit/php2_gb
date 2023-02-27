@@ -16,6 +16,7 @@ class PostTest extends TestCase
             new User(
                 new UUID('789351ac-e010-4c05-b271-7c6793b8eebf'),
                 'login',
+                'pass',
                 new Name('fname', 'lname')
             ),
             'title',

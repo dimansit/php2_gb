@@ -12,9 +12,31 @@ class User
     public function __construct(
         private UUID $uuid,
         private string $username,
+        private string $hashedPassword,
         private Name $name
     )
     {
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @param Name $name
+     * @return static
+     */
+    public static function createFrom(
+        string $username,
+        string $password,
+        Name $name
+    ): self
+    {
+        $uuid = UUID::random();
+        return new self(
+            $uuid,
+            $username,
+            self::hash($password, $uuid),
+            $name
+        );
     }
 
     /**
@@ -24,6 +46,41 @@ class User
     {
         return $this->uuid;
     }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->hashedPassword;
+    }
+
+    /**
+     * @return string
+     */
+    public function hashedPassword(): string
+    {
+        return $this->hashedPassword;
+    }
+
+    /**
+     * @param string $password
+     * @return string
+     */
+    private static function hash(string $password, UUID $uuid): string
+    {
+        return hash('sha256', $uuid . $password);
+    }
+
+    /**
+     * @param string $password
+     * @return bool
+     */
+    public function checkPassword(string $password): bool
+    {
+        return $this->hashedPassword === self::hash($password, $this->getUuid());
+    }
+
 
     /**
      * @return string
@@ -57,4 +114,5 @@ class User
     {
         return "{$this->username}, имя {$this->name->last()} {$this->name->first()}";
     }
+
 }

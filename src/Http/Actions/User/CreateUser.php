@@ -34,16 +34,19 @@ class CreateUser implements ActionInterface
     public function handle(Request $request): Response
     {
         $this->logger->info("Create user command started");
-        $newUserUuid = UUID::random();
+
+        $password = $request->jsonBodyField('password');
+
         try {
-            $user = new User(
-                $newUserUuid,
+            $user = User::createFrom(
                 $request->jsonBodyField('username'),
+                $password,
                 new Name(
                     $request->jsonBodyField('first_name'),
                     $request->jsonBodyField('last_name')
                 )
             );
+
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }

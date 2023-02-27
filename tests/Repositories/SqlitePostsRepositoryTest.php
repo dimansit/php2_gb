@@ -71,6 +71,7 @@ class SqlitePostsRepositoryTest extends TestCase
                 new User(
                     new UUID('e44e3d3e-a65d-4d7c-aed7-aedb25764591'),
                     'useranme',
+                    'pass',
                     new Name('ivan', 'ivanov')
                 ),
                 'title',
