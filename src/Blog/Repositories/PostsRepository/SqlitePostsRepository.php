@@ -9,6 +9,7 @@ use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PDO;
+use PDOException;
 use Psr\Log\LoggerInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInterface
@@ -48,23 +49,26 @@ class SqlitePostsRepository implements PostsRepositoryInterface
 
     }
 
-    public function deletePost(UUID $postUuId): bool
+    /**
+     * @param UUID $postUuId
+     * @throws PostNotFoundException
+     */
+    public function delete(UUID $postUuId): void
     {
-        $statement = $this->connection->prepare(
-            'DELETE FROM posts WHERE uuid = :uuid'
-        );
+        try {
+            $statement = $this->connection->prepare(
+                'DELETE FROM posts WHERE uuid = :uuid'
+            );
+            $result = $statement->execute([
+                ':uuid' => $postUuId,
+            ]);
 
-        $result = $statement->execute([
-            ':uuid' => $postUuId,
-        ]);
-
-        if (!$result) {
+        } catch (PDOException $e) {
             $this->logger->warning("Cannot not delete, post not found: $postUuId");
             throw new PostNotFoundException(
                 "Cannot not delete: $postUuId"
             );
         }
-        return true;
     }
 
     public function get(UUID $uuid): Post

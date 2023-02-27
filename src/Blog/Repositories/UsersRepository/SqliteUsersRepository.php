@@ -34,7 +34,11 @@ class SqliteUsersRepository implements UsersRepositoryInterface
                            :last_name, 
                            :username,
                            :password
-                           )'
+                           )
+                           ON CONFLICT (uuid) DO UPDATE SET
+first_name = :first_name,
+last_name = :last_name'
+
         );
 
         $statement->execute([
@@ -93,7 +97,6 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         return $this->getUser($statement, 'Random User');
     }
 
-    //PDOStateme $statement - убрал потому как не смог разобраться почему в ошибку уходил
 
     /**
      * @throws UserNotFoundException
@@ -113,7 +116,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         return new User(
             new UUID($result['uuid']),
             $result['username'],
-            $result['password']??'',
+            $result['password'] ?? '',
             new Name($result['first_name'], $result['last_name'])
         );
     }

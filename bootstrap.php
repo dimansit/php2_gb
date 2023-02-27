@@ -1,6 +1,11 @@
 <?php
 
 use Dotenv\Dotenv;
+use Faker\Provider\Lorem;
+use Faker\Provider\ru_RU\Internet;
+use Faker\Provider\ru_RU\Person;
+use Faker\Provider\ru_RU\Text;
+
 use GeekBrains\LevelTwo\Blog\Container\DIContainer;
 use GeekBrains\LevelTwo\Blog\Repositories\AuthTokensRepository\AuthTokensRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\AuthTokensRepository\SqliteAuthTokensRepository;
@@ -12,16 +17,14 @@ use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInterfa
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UsersRepositoryInterface;
-use GeekBrains\LevelTwo\Http\Auth\AuthenticationInterface;
 use GeekBrains\LevelTwo\Http\Auth\BearerTokenAuthentication;
-use GeekBrains\LevelTwo\Http\Auth\IdentificationInterface;
-use GeekBrains\LevelTwo\Http\Auth\JsonBodyUuidIdentification;
 use GeekBrains\LevelTwo\Http\Auth\PasswordAuthentication;
 use GeekBrains\LevelTwo\Http\Auth\PasswordAuthenticationInterface;
 use GeekBrains\LevelTwo\Http\Auth\TokenAuthenticationInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -33,6 +36,18 @@ $container->bind(
     PDO::class,
     new PDO('sqlite:' . __DIR__ . '/blog.sqlite')
 );
+
+$faker = new \Faker\Generator();
+
+$faker->addProvider(new Person($faker));
+$faker->addProvider(new Text($faker));
+$faker->addProvider(new Internet($faker));
+$faker->addProvider(new Lorem($faker));
+$container->bind(
+    \Faker\Generator::class,
+    $faker
+);
+
 
 $logger = (new Logger('blog'));
 

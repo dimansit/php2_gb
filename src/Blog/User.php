@@ -8,12 +8,11 @@ use GeekBrains\LevelTwo\Person\Name;
 
 class User
 {
-    private $hashedPassword;
 
     public function __construct(
         private UUID $uuid,
         private string $username,
-        private string $password,
+        private string $hashedPassword,
         private Name $name
     )
     {
@@ -53,7 +52,7 @@ class User
      */
     public function getPassword(): string
     {
-        return $this->password;
+        return $this->hashedPassword;
     }
 
     /**
@@ -115,4 +114,5 @@ class User
     {
         return "{$this->username}, имя {$this->name->last()} {$this->name->first()}";
     }
+
 }

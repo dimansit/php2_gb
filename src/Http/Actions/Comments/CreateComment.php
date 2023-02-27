@@ -65,7 +65,7 @@ class CreateComment implements ActionInterface
      * @param $request
      * @return Post|ErrorResponse
      */
-    private function getPost($request)
+    private function getPost($request): Post|ErrorResponse
     {
         try {
             $postUuid = new UUID($request->jsonBodyField('post_uuid'));
